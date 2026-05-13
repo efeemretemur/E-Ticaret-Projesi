@@ -1,0 +1,61 @@
+﻿@model Product
+
+@{
+    ViewData["Title"] = Model.Name;
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+}
+
+<div class="container py-4">
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-5">
+            <div class="detail-media card border-0">
+                <img src="@(string.IsNullOrWhiteSpace(Model.ImageUrl) ? Url.Content("~/images/no-image.svg") : Model.ImageUrl)"
+                     class="img-fluid rounded-4"
+                     alt="@Model.Name"
+                     onerror="this.src='@Url.Content("~/images/no-image.svg")'" />
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="detail-panel">
+                <p class="eyebrow mb-2">Ürün Detayı</p>
+                <h1 class="section-title mb-3">@Model.Name</h1>
+                <p class="lead text-muted">@Model.Description</p>
+                <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
+                    <span class="price-pill large">@Model.Price.ToString("C")</span>
+                    <span class="stock-pill @(Model.Stock > 0 ? "stock-available" : "stock-empty")">
+                        @(Model.Stock > 0 ? $"Stokta {Model.Stock} adet" : "Stokta yok")
+                    </span>
+                </div>
+
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <form method="post" asp-controller="Cart" asp-action="AddToCart" class="form-card">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                        <div class="row g-3 align-items-end">
+                            <div class="col-sm-4">
+                                <label class="form-label">Adet</label>
+                                <input type="number" name="quantity" value="1" min="1" max="@(Math.Max(Model.Stock, 1))" class="form-control" />
+                            </div>
+                            <div class="col-sm-8 d-grid">
+                                <button type="submit" class="btn btn-amber btn-lg" disabled="@(Model.Stock <= 0)">Sepete Ekle</button>
+                            </div>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="info-card">
+                        <p class="mb-3">Sepete eklemek ve sipariş vermek için önce hesabına giriş yapmalısın.</p>
+                        <a class="btn btn-amber" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl">Giriş Yap</a>
+                    </div>
+                }
+
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Kataloğa Dön</a>
+                    <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-dark">Sepete Git</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

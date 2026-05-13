@@ -1,0 +1,55 @@
+﻿@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-xl-6">
+            <div class="auth-card">
+                <p class="eyebrow mb-2">Yeni hesap</p>
+                <h1 class="section-title mb-3">Nora Shop hesabını oluştur</h1>
+                <p class="text-muted">Üyelik sistemiyle sepetini kaydedebilir, siparişlerini takip edebilir ve alışveriş akışına devam edebilirsin.</p>
+
+                <form method="post" asp-action="Register" class="mt-4 d-grid gap-3">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <div>
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Address" class="form-label"></label>
+                        <textarea asp-for="Address" rows="3" class="form-control" placeholder="Teslimat adresinizi şimdiden ekleyebilirsiniz."></textarea>
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-amber btn-lg">Hesabı Oluştur</button>
+                </form>
+
+                <p class="text-muted small mt-4 mb-0">Zaten hesabın var mı? <a asp-action="Login">Giriş yap</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

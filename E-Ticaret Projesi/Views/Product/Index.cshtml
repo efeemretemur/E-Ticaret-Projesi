@@ -1,0 +1,78 @@
+﻿@model List<Product>
+
+@{
+    ViewData["Title"] = "Ürünler";
+    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
+    int? selectedCategory = ViewBag.SelectedCategory as int?;
+    string search = ViewBag.Search as string ?? string.Empty;
+}
+
+<header class="py-5 catalog-header">
+    <div class="container px-4 px-lg-5 my-4">
+        <div class="row g-4 align-items-end">
+            <div class="col-lg-8">
+                <p class="eyebrow mb-2">Mağaza</p>
+                <h1 class="display-6 fw-bolder mb-2">Tüm ürünler tek vitrinde</h1>
+                <p class="lead hero-copy mb-0">Kategori ve arama filtreleriyle ihtiyacına uygun ürünleri hızlıca bul.</p>
+            </div>
+            <div class="col-lg-4">
+                <form method="get" asp-action="Index" class="search-card d-grid gap-3">
+                    <input type="text" name="search" value="@search" class="form-control" placeholder="Ürün ara..." />
+                    <select name="categoryId" class="form-select">
+                        <option value="">Tüm kategoriler</option>
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.Id" selected="@(selectedCategory == category.Id)">@category.Name</option>
+                        }
+                    </select>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-amber flex-grow-1" type="submit">Filtrele</button>
+                        <a class="btn btn-outline-secondary" asp-action="Index">Temizle</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-2">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <p class="text-muted mb-0">Toplam @Model.Count ürün bulundu.</p>
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <div class="alert alert-info">Seçilen filtrelere uygun ürün bulunamadı. Farklı bir kategori veya arama deneyebilirsin.</div>
+        }
+        else
+        {
+            <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-4 justify-content-center">
+                @foreach (var product in Model)
+                {
+                    <div class="col mb-5">
+                        <div class="card h-100 themed-card border-0">
+                            @if (product.Stock <= 5)
+                            {
+                                <div class="badge stock-badge position-absolute" style="top: 0.75rem; right: 0.75rem">Sınırlı Stok</div>
+                            }
+                            <img class="card-img-top themed-thumb" src="@(string.IsNullOrWhiteSpace(product.ImageUrl) ? Url.Content("~/images/no-image.svg") : product.ImageUrl)" alt="@product.Name" onerror="this.src='@Url.Content("~/images/no-image.svg")'" />
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <h5 class="fw-bolder mb-2">@product.Name</h5>
+                                    <p class="small text-muted mb-3">@product.Description</p>
+                                    <span class="price-pill">@product.Price.ToString("C")</span>
+                                </div>
+                            </div>
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center">
+                                    <a class="btn btn-outline-dark mt-auto" asp-action="Detail" asp-route-id="@product.Id">İncele</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

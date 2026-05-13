@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Nora Shop</title>
+    <link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/startbootstrap-shop.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="shop-body">
+    <nav class="navbar navbar-expand-lg navbar-light themed-navbar sticky-top">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark">N</span>
+                <span>Nora Shop</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="#navbarSupportedContent" aria-expanded="false" aria-label="Menüyü aç">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Product" asp-action="Index">Mağaza</a></li>
+                </ul>
+                <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2">
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <a class="btn nav-cart-btn" asp-controller="Cart" asp-action="Index">
+                            <i class="bi-cart-fill me-1"></i>
+                            Sepet
+                        </a>
+                        <a class="nav-link" asp-controller="Order" asp-action="MyOrders">Siparişlerim</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="btn btn-sm btn-amber" asp-area="Admin" asp-controller="AdminProduct" asp-action="Index">Admin Panel</a>
+                        }
+                        <a class="nav-link" asp-controller="Account" asp-action="Logout">Çıkış</a>
+                    }
+                    else
+                    {
+                        <a class="nav-link" asp-controller="Account" asp-action="Login">Giriş</a>
+                        <a class="btn btn-sm btn-amber" asp-controller="Account" asp-action="Register">Kayıt Ol</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flash-stack container">
+        @if (TempData["Success"] is string successMessage)
+        {
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                @successMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] is string errorMessage)
+        {
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                @errorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+    </div>
+
+    <main class="page-shell">
+        @RenderBody()
+    </main>
+
+    <footer class="py-5 shop-footer border-top">
+        <div class="container px-4 px-lg-5">
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-5">
+                    <p class="eyebrow mb-2">Nora Shop</p>
+                    <p class="mb-2 footer-title">Minimal yaşam alanları için seçili koleksiyonlar</p>
+                    <p class="m-0 footer-copy">Sade tasarım anlayışı, güvenli alışveriş deneyimi ve hızlı destek ile mağaza yolculuğunu daha rahat hale getiriyoruz.</p>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <p class="footer-title mb-2">Destek</p>
+                    <div class="d-grid gap-2 footer-list">
+                        <a class="footer-link" href="tel:08503056742"><i class="bi bi-telephone"></i>0850 305 67 42</a>
+                        <a class="footer-link" href="mailto:destek@norashop.com"><i class="bi bi-envelope"></i>destek@norashop.com</a>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <p class="footer-title mb-2">Müşteri Hizmetleri</p>
+                    <div class="d-grid gap-2 footer-list">
+                        <span><i class="bi bi-clock me-2"></i>Hafta içi 09:00 - 18:00</span>
+                        <span><i class="bi bi-truck me-2"></i>Türkiye geneli teslimat ve sipariş desteği</span>
+                        <span><i class="bi bi-arrow-repeat me-2"></i>İade ve değişim için bizimle iletişime geçin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/startbootstrap-shop.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

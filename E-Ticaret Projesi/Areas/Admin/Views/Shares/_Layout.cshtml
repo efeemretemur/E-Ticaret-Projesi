@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Nora Shop Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <header class="admin-header border-bottom">
+        <div class="container py-3 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+                <p class="eyebrow mb-1">Yonetim Paneli</p>
+                <h1 class="h3 mb-0">Nora Shop operasyon merkezi</h1>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-light" asp-area="" asp-controller="Home" asp-action="Index">Siteye Don</a>
+                <a class="btn btn-light" asp-controller="Account" asp-action="Logout" asp-area="">Cikis</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container admin-shell py-4">
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <aside class="admin-sidebar card border-0 shadow-sm">
+                    <div class="card-body">
+                        <p class="text-uppercase small text-muted mb-3">Yonetim menusu</p>
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-outline-secondary text-start" asp-area="Admin" asp-controller="AdminProduct" asp-action="Index">Urun Yonetimi</a>
+                            <a class="btn btn-outline-secondary text-start" asp-area="Admin" asp-controller="AdminCategory" asp-action="Index">Kategori Yonetimi</a>
+                            <a class="btn btn-outline-secondary text-start" asp-area="Admin" asp-controller="AdminOrder" asp-action="Index">Siparis Yonetimi</a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+            <div class="col-lg-9">
+                @if (TempData["Success"] is string successMessage)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @successMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (TempData["Error"] is string errorMessage)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @errorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

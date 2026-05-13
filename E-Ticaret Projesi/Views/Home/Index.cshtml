@@ -1,0 +1,100 @@
+﻿@model HomeIndexViewModel
+
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<header class="py-5 hero-startbootstrap">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <p class="eyebrow mb-3">Nora Shop</p>
+                <h1 class="display-4 fw-bolder mb-3">Zamansız parçalar ile daha sakin, daha güçlü mekanlar.</h1>
+                <p class="lead hero-copy mb-4">Mobilya ve dekor seçiminde temiz çizgileri, kontrollü renkleri ve işlevli detayları öne çıkarıyoruz.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a class="btn btn-amber btn-lg px-4" asp-controller="Product" asp-action="Index">Mağazayı Aç</a>
+                    <a class="btn btn-outline-secondary btn-lg px-4" asp-controller="Product" asp-action="Index">Yeni Gelenler</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-panel h-100">
+                    <p class="eyebrow mb-2">Seçili Koleksiyon</p>
+                    <h2 class="h3 mb-3">Kurumsal sadelik ile ev konforu arasında dengeli bir vitrin.</h2>
+                    <div class="d-grid gap-3 small text-muted">
+                        <div class="hero-point"><span class="hero-dot"></span> Salon, ofis ve yaşam alanı için seçili ürünler</div>
+                        <div class="hero-point"><span class="hero-dot"></span> Hızlı sipariş akışı ve net ürün detayları</div>
+                        <div class="hero-point"><span class="hero-dot"></span> Modern, düzenli ve kolay gezinilen mağaza deneyimi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <p class="eyebrow mb-2">Kategoriler</p>
+                <h2 class="section-title mb-0">Mağazayı bölüm bölüm gezin</h2>
+            </div>
+            <a class="link-plain" asp-controller="Product" asp-action="Index">Tüm ürünleri gör</a>
+        </div>
+
+        @if (Model.Categories.Any())
+        {
+            <div class="d-flex flex-wrap gap-3 mb-5">
+                @foreach (var category in Model.Categories)
+                {
+                    <a class="category-chip" asp-controller="Product" asp-action="Index" asp-route-categoryId="@category.Id">@category.Name</a>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-2">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <p class="eyebrow mb-2">Vitrin</p>
+                <h2 class="section-title mb-0">Öne çıkan seçimler</h2>
+            </div>
+            <a class="link-plain" asp-controller="Product" asp-action="Index">Tüm kataloğu aç</a>
+        </div>
+
+        @if (Model.FeaturedProducts.Any())
+        {
+            <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-4 justify-content-center">
+                @foreach (var product in Model.FeaturedProducts)
+                {
+                    <div class="col mb-5">
+                        <div class="card h-100 themed-card border-0">
+                            @if (product.Stock <= 5)
+                            {
+                                <div class="badge stock-badge position-absolute" style="top: 0.75rem; right: 0.75rem">Sınırlı Stok</div>
+                            }
+                            <img class="card-img-top themed-thumb" src="@(string.IsNullOrWhiteSpace(product.ImageUrl) ? Url.Content("~/images/no-image.svg") : product.ImageUrl)" alt="@product.Name" onerror="this.src='@Url.Content("~/images/no-image.svg")'" />
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <h5 class="fw-bolder mb-2">@product.Name</h5>
+                                    <p class="small text-muted mb-3">@product.Description</p>
+                                    <span class="price-pill">@product.Price.ToString("C")</span>
+                                </div>
+                            </div>
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center">
+                                    <a class="btn btn-outline-dark mt-auto" asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id">Ürünü İncele</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">Vitrin ürünleri kısa süre içinde burada yer alacak.</div>
+        }
+    </div>
+</section>

@@ -1,0 +1,12 @@
+* text=auto
+
+*.cs text eol=crlf
+*.cshtml text eol=crlf
+*.csproj text eol=crlf
+*.sln text eol=crlf
+*.slnx text eol=crlf
+*.json text eol=crlf
+*.md text eol=crlf
+*.svg text eol=lf
+*.js text eol=crlf
+*.css text eol=crlf

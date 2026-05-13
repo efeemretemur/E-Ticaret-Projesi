@@ -1,0 +1,67 @@
+﻿@model List<Order>
+
+@{
+    ViewData["Title"] = "Sipariş Yönetimi";
+    var statusOptions = ViewBag.StatusOptions as string[] ?? Array.Empty<string>();
+}
+
+<div class="panel-card">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <div>
+            <p class="eyebrow mb-2">Admin</p>
+            <h2 class="section-title mb-0">Sipariş Yönetimi</h2>
+        </div>
+        <p class="text-muted mb-0">Tüm siparişleri görüntüle, durum güncelle ve operasyon akışına hazırla.</p>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info mb-0">Henüz kaydedilmiş sipariş bulunmuyor.</div>
+    }
+    else
+    {
+        <div class="d-grid gap-3">
+            @foreach (var order in Model)
+            {
+                <article class="admin-order-card">
+                    <div class="d-flex flex-column flex-xl-row justify-content-between gap-3">
+                        <div>
+                            <h3 class="h5 mb-1">Sipariş #@order.Id</h3>
+                            <p class="text-muted mb-2">@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</p>
+                            <div class="small text-muted mb-2">Kullanıcı ID: @order.UserId</div>
+                            <div class="small text-muted">Adres: @order.Address</div>
+                        </div>
+                        <div class="text-xl-end">
+                            <div class="fw-semibold mb-2">@order.TotalPrice.ToString("C")</div>
+                            <div class="small text-muted">Kalem sayısı: @order.OrderItems.Sum(x => x.Quantity)</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-end mt-1">
+                        <div class="col-lg-8">
+                            <div class="small text-muted mb-2">Ürünler</div>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var item in order.OrderItems)
+                                {
+                                    <span class="badge text-bg-light border">@(item.Product?.Name ?? "Silinmiş ürün") x @item.Quantity</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <form method="post" asp-action="UpdateStatus" class="d-flex gap-2">
+                                <input type="hidden" name="id" value="@order.Id" />
+                                <select name="status" class="form-select">
+                                    @foreach (var option in statusOptions)
+                                    {
+                                        <option value="@option" selected="@(option == order.Status)">@option</option>
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-amber">Kaydet</button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</div>

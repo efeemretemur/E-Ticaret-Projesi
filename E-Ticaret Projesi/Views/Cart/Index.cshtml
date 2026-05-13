@@ -1,0 +1,79 @@
+﻿@model List<Cart>
+
+@{
+    ViewData["Title"] = "Sepetim";
+    var total = Model.Sum(x => (x.Product?.Price ?? 0) * x.Quantity);
+}
+
+<div class="container py-4">
+    <div class="section-head d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+        <div>
+            <p class="eyebrow mb-2">Sepet</p>
+            <h1 class="section-title mb-0">Seçtiğin ürünleri gözden geçir</h1>
+        </div>
+        <a class="btn btn-outline-secondary" asp-controller="Product" asp-action="Index">Alışverişe Devam Et</a>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">Sepetiniz boş. Ürün ekleyerek satın alma akışını başlatabilirsiniz.</div>
+    }
+    else
+    {
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="cart-table-wrap">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Ürün</th>
+                                <th>Birim Fiyat</th>
+                                <th>Adet</th>
+                                <th>Ara Toplam</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@(item.Product?.Name ?? "Silinmiş ürün")</strong>
+                                    </td>
+                                    <td>@((item.Product?.Price ?? 0).ToString("C"))</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@(((item.Product?.Price ?? 0) * item.Quantity).ToString("C"))</td>
+                                    <td class="text-end">
+                                        <a asp-action="RemoveFromCart" asp-route-cartId="@item.Id" class="btn btn-sm btn-outline-danger">Kaldır</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="summary-card h-100">
+                    <h2 class="h5 mb-3">Sipariş Özeti</h2>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Toplam ürün</span>
+                        <strong>@Model.Sum(x => x.Quantity)</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Ara toplam</span>
+                        <strong>@total.ToString("C")</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span>Kargo</span>
+                        <strong>Ücretsiz</strong>
+                    </div>
+                    <div class="d-flex justify-content-between border-top pt-3 mb-4">
+                        <span>Genel Toplam</span>
+                        <strong>@total.ToString("C")</strong>
+                    </div>
+                    <a asp-controller="Order" asp-action="Checkout" class="btn btn-amber w-100 btn-lg">Siparişi Tamamla</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

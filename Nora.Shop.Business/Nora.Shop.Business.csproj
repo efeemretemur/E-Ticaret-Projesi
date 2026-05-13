@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nora.Shop.Core\Nora.Shop.Core.csproj" />
+    <ProjectReference Include="..\Nora.Shop.Data.Accsess\Nora.Shop.Data.Accsess.csproj" />
+  </ItemGroup>
+
+</Project>

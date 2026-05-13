@@ -1,0 +1,6 @@
+@Nora.Shop.WebAPI_HostAddress = http://localhost:5022
+
+GET {{Nora.Shop.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,78 @@
+﻿@model CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Ödeme ve Teslimat";
+}
+
+<div class="container py-4">
+    <div class="section-head d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+        <div>
+            <p class="eyebrow mb-2">Sipariş</p>
+            <h1 class="section-title mb-0">Teslimat ve ödeme bilgilerini tamamla</h1>
+        </div>
+        <a class="btn btn-outline-secondary" asp-controller="Cart" asp-action="Index">Sepete Dön</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="form-card h-100">
+                <form method="post" asp-action="CompleteOrder" class="d-grid gap-3">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <div>
+                        <label asp-for="Address" class="form-label"></label>
+                        <textarea asp-for="Address" rows="3" class="form-control"></textarea>
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+                    <div>
+                        <label asp-for="CardHolderName" class="form-label"></label>
+                        <input asp-for="CardHolderName" class="form-control" placeholder="Ad Soyad" />
+                        <span asp-validation-for="CardHolderName" class="text-danger small"></span>
+                    </div>
+                    <div>
+                        <label asp-for="CardNumber" class="form-label"></label>
+                        <input asp-for="CardNumber" class="form-control" placeholder="1111 2222 3333 4444" />
+                        <span asp-validation-for="CardNumber" class="text-danger small"></span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="ExpiryDate" class="form-label"></label>
+                            <input asp-for="ExpiryDate" class="form-control" placeholder="AA/YY" />
+                            <span asp-validation-for="ExpiryDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Cvv" class="form-label"></label>
+                            <input asp-for="Cvv" class="form-control" placeholder="123" />
+                            <span asp-validation-for="Cvv" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-amber btn-lg mt-2">Siparişi Onayla</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="summary-card h-100">
+                <h2 class="h5 mb-3">Sipariş Özeti</h2>
+                <div class="d-grid gap-3 mb-4">
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <div class="d-flex justify-content-between gap-3">
+                            <div>
+                                <strong>@(item.Product?.Name ?? "Silinmiş ürün")</strong>
+                                <div class="small text-muted">Adet: @item.Quantity</div>
+                            </div>
+                            <strong>@(((item.Product?.Price ?? 0) * item.Quantity).ToString("C"))</strong>
+                        </div>
+                    }
+                </div>
+                <div class="d-flex justify-content-between border-top pt-3">
+                    <span>Genel Toplam</span>
+                    <strong>@Model.TotalAmount.ToString("C")</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
