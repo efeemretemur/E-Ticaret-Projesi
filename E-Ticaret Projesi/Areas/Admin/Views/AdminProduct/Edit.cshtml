@@ -1,4 +1,4 @@
-﻿@model Product
+﻿@model E_Ticaret_Projesi.ViewModels.AdminProductFormViewModel
 
 @{
     ViewData["Title"] = "Ürün Düzenle";
@@ -14,8 +14,9 @@
         <a asp-action="Index" class="btn btn-outline-secondary">Listeye Dön</a>
     </div>
 
-    <form method="post" asp-action="Edit" class="row g-3">
+    <form method="post" asp-action="Edit" enctype="multipart/form-data" class="row g-3">
         <input asp-for="Id" type="hidden" />
+        <input asp-for="ExistingImageUrl" type="hidden" />
         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
         <div class="col-md-6">
             <label asp-for="Name" class="form-label"></label>
@@ -24,7 +25,7 @@
         </div>
         <div class="col-md-3">
             <label asp-for="Price" class="form-label"></label>
-            <input asp-for="Price" class="form-control" />
+            <input asp-for="Price" class="form-control" placeholder="1250,50" />
             <span asp-validation-for="Price" class="text-danger small"></span>
         </div>
         <div class="col-md-3">
@@ -38,10 +39,24 @@
             <span asp-validation-for="CategoryId" class="text-danger small"></span>
         </div>
         <div class="col-md-6">
-            <label asp-for="ImageUrl" class="form-label"></label>
-            <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
-            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+            <label asp-for="ImageFile" class="form-label"></label>
+            <input asp-for="ImageFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+            <span asp-validation-for="ImageFile" class="text-danger small"></span>
+            <small class="form-text">Yeni bir dosya yüklerseniz mevcut görselin yerini alır.</small>
         </div>
+        <div class="col-md-6">
+            <label asp-for="ImageUrl" class="form-label">Görsel Bağlantısı</label>
+            <input asp-for="ImageUrl" class="form-control" placeholder="https://... veya /images/..." />
+            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+            <small class="form-text">Bu alanı boş bırakırsanız mevcut görsel korunur.</small>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.ExistingImageUrl))
+        {
+            <div class="col-12">
+                <p class="form-label mb-2">Mevcut Görsel</p>
+                <img src="@Model.ExistingImageUrl" alt="@Model.Name" class="img-fluid rounded-4 border" style="max-height: 220px;" />
+            </div>
+        }
         <div class="col-12">
             <label asp-for="Description" class="form-label"></label>
             <textarea asp-for="Description" rows="4" class="form-control"></textarea>

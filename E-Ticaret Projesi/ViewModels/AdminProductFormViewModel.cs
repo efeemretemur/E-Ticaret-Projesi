@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 using Nora.Shop.Core.Attributes;
 
-namespace Nora.Shop.Core.Entities
+namespace E_Ticaret_Projesi.ViewModels
 {
-    public class Product
+    public class AdminProductFormViewModel
     {
         public int Id { get; set; }
 
@@ -29,9 +30,12 @@ namespace Nora.Shop.Core.Entities
         [AbsoluteOrAppRelativeUrl(ErrorMessage = "Resim alanı geçerli bir bağlantı veya /images/... yolu olmalı.")]
         public string? ImageUrl { get; set; }
 
+        public string? ExistingImageUrl { get; set; }
+
+        [Display(Name = "Görsel Dosyası")]
+        public IFormFile? ImageFile { get; set; }
+
         [Range(1, int.MaxValue, ErrorMessage = "Kategori seçmelisiniz.")]
         public int CategoryId { get; set; }
-
-        public Category? Category { get; set; }
     }
 }
