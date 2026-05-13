@@ -75,13 +75,22 @@ Projede katmanlı mimari kullanılmıştır.
 - Veritabanı işlemleri `Entity Framework Core` ile yönetilmektedir.
 - Uygulama açılışında migration kontrolü yapılır.
 - Gerekli roller oluşturulur.
-- Admin kullanıcısı yoksa otomatik eklenir.
 - Örnek kategori ve ürünler otomatik olarak sisteme yüklenir.
+- Demo admin hesabı yalnızca gizli yapılandırma sağlandığında oluşturulur.
 
-## Admin Giriş Bilgileri
+## Güvenli Admin Kurulumu
 
-- E-posta: `admin@norashop.com`
-- Şifre: `Admin123!`
+Public repoda sabit admin şifresi tutulmamaktadır. Demo admin hesabı oluşturmak için `User Secrets` veya ortam değişkeni kullanılması gerekir.
+
+### User Secrets ile örnek kurulum
+
+```powershell
+dotnet user-secrets set "SeedAdmin:Email" "admin@demo.local" --project ".\E-Ticaret Projesi\E-Ticaret Projesi.csproj"
+dotnet user-secrets set "SeedAdmin:Password" "GucluBirSifre123!" --project ".\E-Ticaret Projesi\E-Ticaret Projesi.csproj"
+dotnet user-secrets set "SeedAdmin:FullName" "Demo Admin" --project ".\E-Ticaret Projesi\E-Ticaret Projesi.csproj"
+```
+
+Bu bilgiler yalnızca yerel geliştirme ortamında tutulur ve GitHub reposuna gitmez.
 
 ## API Endpointleri
 
@@ -106,8 +115,9 @@ Projede katmanlı mimari kullanılmıştır.
 1. Projeyi bilgisayarınıza indirin.
 2. `appsettings.json` içindeki `DefaultConnection` bilgisini kontrol edin.
 3. Veritabanı bağlantınızın aktif olduğundan emin olun.
-4. MVC projesini veya Web API projesini çalıştırın.
-5. Uygulama ilk açılışta gerekli verileri otomatik olarak oluşturacaktır.
+4. Gerekirse `User Secrets` ile demo admin bilgilerini tanımlayın.
+5. MVC projesini veya Web API projesini çalıştırın.
+6. Uygulama ilk açılışta gerekli verileri otomatik olarak oluşturacaktır.
 
 ## Projeyi Çalıştırma
 
@@ -133,7 +143,7 @@ Başlangıç projesi olarak `Nora.Shop.WebAPI` seçilip çalıştırılabilir.
 - Sipariş oluşturulunca stoktan düşüm yapılır.
 - Kategoriye bağlı ürün varsa kategori silme işlemi engellenir.
 - Admin paneli yalnızca `Admin` rolündeki kullanıcılar tarafından kullanılabilir.
-- API tarafında da ürün ve kategori işlemleri ayrı controller yapıları ile sunulmaktadır.
+- API tarafında ürün ve kategori işlemleri ayrı controller yapıları ile sunulmaktadır.
 
 ## Teslim İçeriği
 

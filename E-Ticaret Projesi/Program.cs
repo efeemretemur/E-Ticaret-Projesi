@@ -1,5 +1,7 @@
+using E_Ticaret_Projesi.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Nora.Shop.Business.Services;
 using Nora.Shop.Core.Entities;
 using Nora.Shop.Core.Interfaces;
@@ -12,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<NoraShopContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.Configure<AdminSeedOptions>(
+    builder.Configuration.GetSection(AdminSeedOptions.SectionName));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<NoraShopContext>()
@@ -33,6 +38,8 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<NoraShopContext>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+    var adminSeedOptions = scope.ServiceProvider.GetRequiredService<IOptions<AdminSeedOptions>>().Value;
 
     await NoraShopCatalogSeed.EnsureSeedDataAsync(context);
 
@@ -42,13 +49,41 @@ using (var scope = app.Services.CreateScope())
     if (!await roleManager.RoleExistsAsync("User"))
         await roleManager.CreateAsync(new IdentityRole("User"));
 
-    var admin = await userManager.FindByEmailAsync("admin@norashop.com");
-    if (admin == null)
+    if (adminSeedOptions.IsConfigured)
+    {
+        var admin = await userManager.FindByEmailAsync(adminSeedOptions.Email);
+        if (admin == null)
         {
-            admin = new AppUser { UserName = "admin@norashop.com", Email = "admin@norashop.com", FullName = "Admin", Address = string.Empty };
-            await userManager.CreateAsync(admin, "Admin123!");
+            admin = new AppUser
+            {
+                UserName = adminSeedOptions.Email,
+                Email = adminSeedOptions.Email,
+                FullName = adminSeedOptions.FullName,
+                Address = string.Empty
+            };
+
+            var createResult = await userManager.CreateAsync(admin, adminSeedOptions.Password);
+            if (!createResult.Succeeded)
+            {
+                var errors = string.Join(", ", createResult.Errors.Select(error => error.Description));
+                logger.LogWarning("Demo admin kullanicisi olusturulamadi: {Errors}", errors);
+            }
+            else
+            {
+                await userManager.AddToRoleAsync(admin, "Admin");
+            }
+        }
+        else if (!await userManager.IsInRoleAsync(admin, "Admin"))
+        {
             await userManager.AddToRoleAsync(admin, "Admin");
         }
+    }
+    else
+    {
+        logger.LogInformation(
+            "{Section} ayarlari bulunamadigi icin demo admin hesabi otomatik olusturulmadi.",
+            AdminSeedOptions.SectionName);
+    }
 }
 
 if (!app.Environment.IsDevelopment())

@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>E_Ticaret_Projesi</RootNamespace>
+    <UserSecretsId>e-ticaret-projesi-nora-shop-2026</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
