@@ -1,40 +1,34 @@
-﻿using Microsoft.EntityFrameworkCore;
 using Nora.Shop.Core.Entities;
 using Nora.Shop.Core.Interfaces;
-using Nora.Shop.DataAccess.Context;
 
 namespace Nora.Shop.Business.Services
 {
     public class CartService : ICartService
     {
-        private readonly IRepository<Cart> _cartRepository;
-        private readonly NoraShopContext _context;
+        private readonly ICartRepository _cartRepository;
+        private readonly IProductRepository _productRepository;
 
-        public CartService(IRepository<Cart> cartRepository, NoraShopContext context)
+        public CartService(ICartRepository cartRepository, IProductRepository productRepository)
         {
             _cartRepository = cartRepository;
-            _context = context;
+            _productRepository = productRepository;
         }
 
         public List<Cart> GetCartItems(string userId)
         {
-            return _context.Carts
-                .Include(c => c.Product)
-                .Where(c => c.UserId == userId)
-                .ToList();
+            return _cartRepository.GetCartItems(userId);
         }
 
         public void AddToCart(string userId, int productId, int quantity)
         {
-            var product = _context.Products.FirstOrDefault(p => p.Id == productId);
+            var product = _productRepository.GetById(productId);
             if (product is null || product.Stock <= 0)
             {
                 return;
             }
 
             var quantityToAdd = Math.Max(1, Math.Min(quantity, product.Stock));
-            var existingCartItem = _context.Carts
-                .FirstOrDefault(c => c.UserId == userId && c.ProductId == productId);
+            var existingCartItem = _cartRepository.GetCartItem(userId, productId);
 
             if (existingCartItem != null)
             {
@@ -60,11 +54,7 @@ namespace Nora.Shop.Business.Services
 
         public void ClearCart(string userId)
         {
-            var items = GetCartItems(userId);
-            foreach (var item in items)
-            {
-                _cartRepository.Delete(item.Id);
-            }
+            _cartRepository.ClearCart(userId);
         }
     }
 }

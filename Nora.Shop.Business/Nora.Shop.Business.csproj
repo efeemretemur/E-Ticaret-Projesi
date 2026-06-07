@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Nora.Shop.Core\Nora.Shop.Core.csproj" />
-    <ProjectReference Include="..\Nora.Shop.Data.Accsess\Nora.Shop.Data.Accsess.csproj" />
   </ItemGroup>
 
 </Project>

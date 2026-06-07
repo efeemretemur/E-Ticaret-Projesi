@@ -1,58 +1,49 @@
-﻿using Microsoft.EntityFrameworkCore;
 using Nora.Shop.Core.Entities;
-using Nora.Shop.DataAccess.Context;
+using Nora.Shop.Core.Interfaces;
 
 namespace Nora.Shop.Business.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly NoraShopContext _context;
+        private readonly IOrderRepository _orderRepository;
+        private readonly ICartRepository _cartRepository;
+        private readonly IProductRepository _productRepository;
 
-        public OrderService(NoraShopContext context)
+        public OrderService(
+            IOrderRepository orderRepository,
+            ICartRepository cartRepository,
+            IProductRepository productRepository)
         {
-            _context = context;
+            _orderRepository = orderRepository;
+            _cartRepository = cartRepository;
+            _productRepository = productRepository;
         }
 
         public List<Order> GetAllOrders()
         {
-            return _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .OrderByDescending(o => o.OrderDate)
-                .ToList();
+            return _orderRepository.GetAllOrdersWithItems();
         }
 
         public List<Order> GetUserOrders(string userId)
         {
-            return _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .Where(o => o.UserId == userId)
-                .OrderByDescending(o => o.OrderDate)
-                .ToList();
+            return _orderRepository.GetUserOrders(userId);
         }
 
         public Order GetOrderById(int id)
         {
-            return _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .FirstOrDefault(o => o.Id == id)!;
+            return _orderRepository.GetOrderWithItems(id)!;
         }
 
         public bool CreateOrder(string userId, string address)
         {
-            var cartItems = _context.Carts
-                .Include(c => c.Product)
-                .Where(c => c.UserId == userId)
-                .ToList();
+            var cartItems = _cartRepository.GetCartItems(userId);
 
             if (cartItems.Count == 0)
             {
                 return false;
             }
 
-            if (cartItems.Any(c => c.Product is null || c.Quantity > c.Product.Stock))
+            if (cartItems.Any(cart => cart.Product is null || cart.Quantity > cart.Product.Stock))
             {
                 return false;
             }
@@ -63,40 +54,40 @@ namespace Nora.Shop.Business.Services
                 Address = address,
                 OrderDate = DateTime.Now,
                 Status = "Beklemede",
-                TotalPrice = cartItems.Sum(c => c.Quantity * (c.Product?.Price ?? 0)),
-                OrderItems = cartItems.Select(c => new OrderItem
+                TotalPrice = cartItems.Sum(cart => cart.Quantity * (cart.Product?.Price ?? 0)),
+                OrderItems = cartItems.Select(cart => new OrderItem
                 {
-                    ProductId = c.ProductId,
-                    Quantity = c.Quantity,
-                    UnitPrice = c.Product?.Price ?? 0
+                    ProductId = cart.ProductId,
+                    Quantity = cart.Quantity,
+                    UnitPrice = cart.Product?.Price ?? 0
                 }).ToList()
             };
 
-            _context.Orders.Add(order);
+            _orderRepository.Add(order);
 
             foreach (var item in cartItems)
             {
                 if (item.Product is not null)
                 {
                     item.Product.Stock -= item.Quantity;
+                    _productRepository.Update(item.Product);
                 }
             }
 
-            _context.Carts.RemoveRange(cartItems);
-            _context.SaveChanges();
+            _cartRepository.ClearCart(userId);
             return true;
         }
 
         public void UpdateOrderStatus(int orderId, string status)
         {
-            var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+            var order = _orderRepository.GetById(orderId);
             if (order is null)
             {
                 return;
             }
 
             order.Status = status;
-            _context.SaveChanges();
+            _orderRepository.Update(order);
         }
     }
 }

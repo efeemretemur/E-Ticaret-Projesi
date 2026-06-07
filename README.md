@@ -1,98 +1,54 @@
 # Nora Shop
 
-Nora Shop, ASP.NET Core tabanlı bir e-ticaret bitirme projesidir. Projede kullanıcı üyelik sistemi, ürün kataloğu, sepet ve sipariş akışı, admin paneli ve Web API katmanı birlikte yer almaktadır.
+Nora Shop, ASP.NET Core MVC ve ASP.NET Core Web API olarak iki ayrı sunum projesi bulunan, katmanlı mimariye sahip bir e-ticaret uygulamasıdır.
 
-## Proje Özeti
+## Çözüm Yapısı
 
-Bu proje, yazılım uzmanlığı bitirme projesi kapsamında geliştirilmiş çok katmanlı bir e-ticaret uygulamasıdır. Amaç; hem kullanıcı tarafında çalışan bir mağaza deneyimi sunmak hem de admin paneli üzerinden ürün, kategori ve sipariş yönetimini gerçekleştirmektir.
+- `E-Ticaret Projesi`: MVC kullanıcı arayüzü ve admin paneli
+- `Nora.Shop.WebAPI`: REST API projesi
+- `Nora.Shop.Business`: iş kuralları ve servis katmanı
+- `Nora.Shop.Core`: entity sınıfları ve repository arayüzleri
+- `Nora.Shop.Data.Accsess`: EF Core DbContext, migration, seed ve repository uygulamaları
 
 ## Kullanılan Teknolojiler
 
 - ASP.NET Core MVC
+- ASP.NET Core Web API
 - ASP.NET Core Identity
 - Entity Framework Core
 - SQL Server
-- Web API
 - Generic Repository Pattern
-- Katmanlı Mimari
+- Entity bazlı repository yapısı
+- Dependency Injection
 - Bootstrap
 
-## Proje Özellikleri
+## MVC Özellikleri
 
-### Kullanıcı Tarafı
+- Kullanıcı kayıt, giriş ve çıkış işlemleri
+- Ürün listeleme, arama, kategori filtresi ve detay sayfası
+- Sepete ürün ekleme ve sepetten ürün silme
+- Sipariş oluşturma ve sipariş geçmişi görüntüleme
+- Admin panelinde ürün, kategori ve sipariş yönetimi
+- Admin rolü ile yetkilendirilmiş yönetim ekranları
 
-- Üye kayıt olma
-- Giriş yapma ve çıkış yapma
-- Ürün listeleme
-- Kategoriye göre filtreleme
-- Ürün arama
-- Ürün detay sayfası
-- Sepete ürün ekleme
-- Sepetten ürün kaldırma
-- Ödeme formu ile sipariş oluşturma
-- Sipariş geçmişini görüntüleme
+## Web API Controllerları
 
-### Admin Paneli
+Varsayılan `WeatherForecast` controllerı kaldırılmıştır. API projesinde e-ticaret alanına ait controllerlar kullanılır.
 
-- Ürün ekleme, güncelleme, silme
-- Kategori ekleme, güncelleme, silme
-- Siparişleri listeleme
-- Sipariş durumunu güncelleme
-
-### Web API
-
-- Ürünler için CRUD işlemleri
-- Kategoriler için CRUD işlemleri
-
-## Katmanlı Mimari
-
-Projede katmanlı mimari kullanılmıştır.
-
-- `Nora.Shop.Core`
-  - Entity sınıfları
-  - Interface tanımları
-
-- `Nora.Shop.Data.Accsess`
-  - EF Core DbContext
-  - Migration dosyaları
-  - Repository katmanı
-  - Seed işlemleri
-
-- `Nora.Shop.Business`
-  - Servisler
-  - İş kuralları
-
-- `E-Ticaret Projesi`
-  - MVC arayüzü
-  - Kullanıcı ekranları
-  - Admin paneli
-
-- `Nora.Shop.WebAPI`
-  - API katmanı
-
-## Veritabanı ve Seed Yapısı
-
-- Veritabanı işlemleri `Entity Framework Core` ile yönetilmektedir.
-- Uygulama açılışında migration kontrolü yapılır.
-- Gerekli roller oluşturulur.
-- Örnek kategori ve ürünler otomatik olarak sisteme yüklenir.
-- Demo admin hesabı yalnızca gizli yapılandırma sağlandığında oluşturulur.
-
-## Güvenli Admin Kurulumu
-
-Public repoda sabit admin şifresi tutulmamaktadır. Demo admin hesabı oluşturmak için `User Secrets` veya ortam değişkeni kullanılması gerekir.
-
-### User Secrets ile örnek kurulum
-
-```powershell
-dotnet user-secrets set "SeedAdmin:Email" "admin@demo.local" --project ".\E-Ticaret Projesi\E-Ticaret Projesi.csproj"
-dotnet user-secrets set "SeedAdmin:Password" "GucluBirSifre123!" --project ".\E-Ticaret Projesi\E-Ticaret Projesi.csproj"
-dotnet user-secrets set "SeedAdmin:FullName" "Demo Admin" --project ".\E-Ticaret Projesi\E-Ticaret Projesi.csproj"
-```
-
-Bu bilgiler yalnızca yerel geliştirme ortamında tutulur ve GitHub reposuna gitmez.
+- `AccountController`: kayıt, giriş, çıkış ve profil bilgisi
+- `ProductsController`: ürün CRUD işlemleri
+- `CategoriesController`: kategori CRUD işlemleri
+- `CartsController`: kullanıcı sepeti listeleme, ekleme, silme ve temizleme
+- `OrdersController`: sipariş listeleme, kullanıcı siparişleri, sipariş oluşturma ve durum güncelleme
 
 ## API Endpointleri
+
+### Account
+
+- `POST /api/account/register`
+- `POST /api/account/login`
+- `POST /api/account/logout`
+- `GET /api/account/profile/{email}`
 
 ### Products
 
@@ -110,54 +66,61 @@ Bu bilgiler yalnızca yerel geliştirme ortamında tutulur ve GitHub reposuna gi
 - `PUT /api/categories/{id}`
 - `DELETE /api/categories/{id}`
 
-## Kurulum Adımları
+### Cart
 
-1. Projeyi bilgisayarınıza indirin.
-2. `appsettings.json` içindeki `DefaultConnection` bilgisini kontrol edin.
-3. Veritabanı bağlantınızın aktif olduğundan emin olun.
-4. Gerekirse `User Secrets` ile demo admin bilgilerini tanımlayın.
-5. MVC projesini veya Web API projesini çalıştırın.
-6. Uygulama ilk açılışta gerekli verileri otomatik olarak oluşturacaktır.
+- `GET /api/users/{userId}/cart`
+- `POST /api/users/{userId}/cart`
+- `DELETE /api/users/{userId}/cart/{cartId}`
+- `DELETE /api/users/{userId}/cart`
 
-## Projeyi Çalıştırma
+### Orders
 
-### MVC Uygulaması
+- `GET /api/orders`
+- `GET /api/orders/{id}`
+- `GET /api/orders/user/{userId}`
+- `POST /api/orders/user/{userId}`
+- `PATCH /api/orders/{id}/status`
 
-Başlangıç projesi olarak `E-Ticaret Projesi` seçilip çalıştırılabilir.
+## Repository Yapısı
 
-### Web API
+Core katmanında genel repository arayüzü ve entity bazlı repository arayüzleri bulunur.
 
-Başlangıç projesi olarak `Nora.Shop.WebAPI` seçilip çalıştırılabilir.
+- `IRepository<T>`
+- `IProductRepository`
+- `ICategoryRepository`
+- `ICartRepository`
+- `IOrderRepository`
 
-## Projede Uygulanan Yapılar
+DataAccess katmanında bu arayüzlerin uygulamaları bulunur.
 
-- Generic Repository Pattern
-- Katmanlı Mimari
-- Dependency Injection
-- Identity ile üyelik sistemi
-- EF Core migration yapısı
-- Validation destekli form yapıları
+- `GenericRepository<T>`
+- `ProductRepository`
+- `CategoryRepository`
+- `CartRepository`
+- `OrderRepository`
 
-## Notlar
+Business servisleri doğrudan `DbContext` ile çalışmaz; repository arayüzleri üzerinden veri erişimi yapar.
 
-- Sipariş oluşturulunca stoktan düşüm yapılır.
-- Kategoriye bağlı ürün varsa kategori silme işlemi engellenir.
-- Admin paneli yalnızca `Admin` rolündeki kullanıcılar tarafından kullanılabilir.
-- API tarafında ürün ve kategori işlemleri ayrı controller yapıları ile sunulmaktadır.
+## Veritabanı ve Seed
 
-## Teslim İçeriği
+- Veritabanı işlemleri Entity Framework Core ile yönetilir.
+- Identity tabloları aynı DbContext içinde tutulur.
+- Örnek kategori ve ürünler uygulama açılışında seed edilir.
+- Admin hesabı güvenlik nedeniyle public dosyada sabit şifreyle tutulmaz; `User Secrets` veya ortam değişkeni ile tanımlanır.
 
-Bu proje bitirme projesi teslimi için aşağıdaki maddeleri desteklemektedir:
+## Demo Admin Kurulumu
 
-- Frontend + Backend
-- Admin Paneli
-- Generic Repository Pattern
-- Üyelik Sistemi
-- E-ticaret modülleri
-- SOLID ve katmanlı yapı yaklaşımı
-- EF Core kullanımı
-- Web API katmanı
+```powershell
+dotnet user-secrets set "SeedAdmin:Email" "admin@demo.local" --project ".\E-Ticaret Projesi\E-Ticaret Projesi.csproj"
+dotnet user-secrets set "SeedAdmin:Password" "GucluBirSifre123!" --project ".\E-Ticaret Projesi\E-Ticaret Projesi.csproj"
+dotnet user-secrets set "SeedAdmin:FullName" "Demo Admin" --project ".\E-Ticaret Projesi\E-Ticaret Projesi.csproj"
+```
 
-## Geliştirici
+## Derleme
 
-- Temur
+```powershell
+dotnet build "Nora.Shop.WebAPI\Nora.Shop.WebAPI.csproj" /m:1 /p:UseSharedCompilation=false
+dotnet build "E-Ticaret Projesi\E-Ticaret Projesi.csproj" /m:1 /p:UseSharedCompilation=false
+```
+
+`/m:1` parametresi, bazı Windows ortamlarında restore sırasında oluşabilen paralel MSBuild erişim hatalarını önlemek için kullanılır.
