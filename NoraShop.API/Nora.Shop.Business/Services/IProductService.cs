@@ -1,4 +1,5 @@
-﻿using Nora.Shop.Core.Entities;
+﻿using System.Collections.Generic;
+using Nora.Shop.Core.Entities;
 
 namespace Nora.Shop.Business.Services
 {

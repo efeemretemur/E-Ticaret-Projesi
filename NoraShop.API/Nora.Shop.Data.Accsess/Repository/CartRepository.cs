@@ -1,4 +1,5 @@
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 using Nora.Shop.Core.Entities;
 using Nora.Shop.Core.Interfaces;
 using Nora.Shop.DataAccess.Context;
@@ -16,23 +17,22 @@ namespace Nora.Shop.DataAccess.Repository
 
         public List<Cart> GetCartItems(string userId)
         {
-            return _context.Carts
-                .Include(cart => cart.Product)
-                .Where(cart => cart.UserId == userId)
-                .ToList();
+            return _context.Carts.Where(c => c.UserId == userId).ToList();
         }
 
         public Cart? GetCartItem(string userId, int productId)
         {
-            return _context.Carts
-                .FirstOrDefault(cart => cart.UserId == userId && cart.ProductId == productId);
+            return _context.Carts.FirstOrDefault(c => c.UserId == userId && c.ProductId == productId);
         }
 
         public void ClearCart(string userId)
         {
-            var items = _context.Carts.Where(cart => cart.UserId == userId);
-            _context.Carts.RemoveRange(items);
-            _context.SaveChanges();
+            var items = _context.Carts.Where(c => c.UserId == userId).ToList();
+            if (items.Any())
+            {
+                _context.Carts.RemoveRange(items);
+                _context.SaveChanges();
+            }
         }
     }
 }

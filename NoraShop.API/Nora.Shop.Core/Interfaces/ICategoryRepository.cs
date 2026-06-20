@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Nora.Shop.Core.Entities;
 
 namespace Nora.Shop.Core.Interfaces

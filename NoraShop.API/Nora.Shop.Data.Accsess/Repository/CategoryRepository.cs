@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Nora.Shop.Core.Entities;
 using Nora.Shop.Core.Interfaces;
@@ -16,10 +18,8 @@ namespace Nora.Shop.DataAccess.Repository
 
         public List<Category> GetCategoriesWithProducts()
         {
-            return _context.Categories
-                .Include(category => category.Products)
-                .OrderBy(category => category.Name)
-                .ToList();
+            // Kategorileri altındaki ürünlerle birlikte (Include ederek) listeliyoruz
+            return _context.Categories.Include(c => c.Products).ToList();
         }
     }
 }

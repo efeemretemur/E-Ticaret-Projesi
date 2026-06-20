@@ -33,6 +33,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -68,8 +69,8 @@ using (var scope = app.Services.CreateScope())
             var createResult = await userManager.CreateAsync(admin, adminSeedOptions.Password);
             if (!createResult.Succeeded)
             {
-                var errors = string.Join(", ", createResult.Errors.Select(error => error.Description));
-                logger.LogWarning("Demo admin kullanicisi olusturulamadi: {Errors}", errors);
+                var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
+                logger.LogWarning("Domo admin kullanicisi olusturulamadi: {Errors}", errors);
             }
             else
             {
@@ -83,9 +84,7 @@ using (var scope = app.Services.CreateScope())
     }
     else
     {
-        logger.LogInformation(
-            "{Section} ayarlari bulunamadigi icin demo admin hesabi otomatik olusturulmadi.",
-            AdminSeedOptions.SectionName);
+        logger.LogInformation("{Section} ayarlari bulunamadigi icin domo admin hesabi otomatik olusturulamadi.", AdminSeedOptions.SectionName);
     }
 }
 
@@ -93,8 +92,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
-    app.UseHttpsRedirection();
 }
+
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();

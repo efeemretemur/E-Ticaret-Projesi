@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Nora.Shop.Business\Nora.Shop.Business.csproj" />
-    <ProjectReference Include="..\Nora.Shop.Data.Accsess\Nora.Shop.Data.Accsess.csproj" />
+    <ProjectReference Include="..\..\NoraShop.API\Nora.Shop.Business\Nora.Shop.Business.csproj" />
+    <ProjectReference Include="..\..\NoraShop.API\Nora.Shop.Data.Accsess\Nora.Shop.Data.Accsess.csproj" />
   </ItemGroup>
 
 </Project>
