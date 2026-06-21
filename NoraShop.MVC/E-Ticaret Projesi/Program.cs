@@ -107,5 +107,17 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<Nora.Shop.DataAccess.Context.NoraShopContext>();
+        context.Database.EnsureCreated(); 
+    }
+    catch (Exception ex)
+    {
+        
+    }
+}
 app.Run();

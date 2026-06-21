@@ -1,7 +1,8 @@
 <Solution>
-  <Project Path="../NoraShop.MVC/E-Ticaret Projesi/E-Ticaret Projesi.csproj" />
   <Project Path="../NoraShop.API/Nora.Shop.Business/Nora.Shop.Business.csproj" />
   <Project Path="../NoraShop.API/Nora.Shop.Core/Nora.Shop.Core.csproj" />
   <Project Path="../NoraShop.API/Nora.Shop.Data.Accsess/Nora.Shop.Data.Accsess.csproj" />
   <Project Path="../NoraShop.API/Nora.Shop.WebAPI/Nora.Shop.WebAPI.csproj" />
+  <Project Path="../NoraShop.MVC/E-Ticaret Projesi/E-Ticaret Projesi.csproj" />
+  <Project Path="Nora.Shop.Web/Nora.Shop.Web.csproj" Id="bdab9ee5-90ff-4b72-bd61-3152e833d094" />
 </Solution>
