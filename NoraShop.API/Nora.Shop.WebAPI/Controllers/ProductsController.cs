@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Nora.Shop.Business.Services;
 using Nora.Shop.Core.Entities;
 
@@ -26,6 +27,7 @@ namespace Nora.Shop.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(Product product)
         {
             _productService.AddProduct(product);
@@ -33,6 +35,7 @@ namespace Nora.Shop.WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Update(int id, Product product)
         {
             if (id != product.Id)
@@ -51,6 +54,7 @@ namespace Nora.Shop.WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             var existingProduct = _productService.GetProductById(id);
